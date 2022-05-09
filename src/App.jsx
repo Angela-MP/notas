@@ -1,20 +1,23 @@
 import { useState } from "react";
 function App() {
-  //Declaración de state: "hooks"
+  //"hooks"
   const [inputState, setInputState] =  useState({
     titulo: "",
     fecha: "",
     nota: "",
   }); //valor inicial del State
 
-  const handleInputChange= (event) => { 
+  const initialState = JSON.parse (localStorage.getItem("notas")) || [];
+  const [notas, setNotas] = useState(initialState);
+
+  const handleInputChange = (event) => { 
     setInputState({
     ...inputState,
     [event.target.name]: event.target.value,
     });
    };
- //botón limpiar
-  const handleInputClean = () => { 
+ //botón limpiar formulario
+  const handleClickLimpiar = () => { 
     setInputState({
         titulo: "",
         fecha: "",
@@ -22,15 +25,64 @@ function App() {
     });
    }; 
 
-   const handleClickGuardar = () =>{
-     localStorage.setItem("notas", JSON.stringify(inputState))
+//botón limpiar lista de notas
+const handleClickLimpiarLista = () => {
+  setNotas([])
+  localStorage.setItem("notas",JSON.stringify([]));
+};
+
+  const handleBorrarNota = (index) =>{
+  const nuevoArreglo = []
+    
+    notas.forEach((nota, i) =>{
+      if (index!==i){
+        nuevoArreglo.push(nota)
+      }  
+    });
+    localStorage.setItem("notas", JSON.stringify(nuevoArreglo))
+    setNotas([...nuevoArreglo])
    };
+
+   const handleClickGuardar = ()=> {
+    setNotas([...notas, inputState])
+    localStorage.setItem("notas",JSON.stringify(notas));
+    handleClickLimpiar();
+    };
 
   return (
     <div className="App container">
       <div className="row"> 
         <div className="col"> 
-            <h3>Lista</h3> 
+            <h3>Lista</h3>
+            {notas.length===0 ? (
+              "Al momento no tienes notas guardadas. Puedes crear una en el formulario contiguo."
+              ) : ( 
+                <ol>
+                  {notas.map((item, index) => { 
+                  return(
+                    <li key={index}>
+                      {item.titulo}({item.fecha})&nbsp;
+                      <i 
+                      className="bi bi-x-circle-fill"
+                      onClick={() =>handleBorrarNota(index)}
+                      style={{ 
+                        color:"red", 
+                        fontSize:"1.0rem",
+                        cursor:"pointer"
+                        }}
+                        >
+                        </i>
+                    </li>
+                  );
+                })}
+                </ol>
+              )}
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleClickLimpiarLista}>
+            Limpiar lista
+          </button>
         </div>
         <div className="col">
       <h3>Notas</h3>
@@ -51,7 +103,7 @@ function App() {
           <input 
             id="fecha" 
             name="fecha" 
-            type="text" 
+            type="date" 
             onChange={handleInputChange}
             value={inputState.fecha} 
             style={{ width:"100%" }}
@@ -60,10 +112,9 @@ function App() {
       <br />
       <label className="mb-2" style={{ width:"100%" }}>
         Nota
-          <input 
+          <textarea 
             id="nota" 
             name="nota" 
-            type="text" 
             onChange={handleInputChange}
             value={inputState.nota} 
             style={{ width:"100%" }}
@@ -76,7 +127,7 @@ function App() {
         <button 
             type="button"
             className="btn btn-primary" 
-            onClick={handleInputClean}
+            onClick={handleClickLimpiar}
         >
             Limpiar
         </button> 
@@ -93,12 +144,9 @@ function App() {
       </button>
       </span>
     </div>
-
     </div>      
     </div>
     </div>
-
-
     </div>
   );
 }
