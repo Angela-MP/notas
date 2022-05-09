@@ -80,7 +80,8 @@ const handleClickLimpiarLista = () => {
           <button
             type="button"
             className="btn btn-primary"
-            onClick={handleClickLimpiarLista}>
+            onClick={handleClickLimpiarLista}
+            disabled={notas.length===0}>
             Limpiar lista
           </button>
         </div>
@@ -128,6 +129,7 @@ const handleClickLimpiarLista = () => {
             type="button"
             className="btn btn-primary" 
             onClick={handleClickLimpiar}
+            disabled={inputState.titulo==="" ||inputState.fecha==="" ||inputState.nota===""}        
         >
             Limpiar
         </button> 
@@ -139,6 +141,7 @@ const handleClickLimpiarLista = () => {
             type="button" 
             className="btn btn-primary" 
             onClick={handleClickGuardar}
+            disabled={inputState.titulo==="" ||inputState.fecha==="" ||inputState.nota===""}
         >
         Guardar
       </button>
