@@ -49,6 +49,10 @@ const handleClickLimpiarLista = () => {
     handleClickLimpiar();
     };
 
+    const handleClickNota = (index) => {
+      setInputState({...notas[index]})
+    };
+
   return (
     <div className="App container">
       <div className="row"> 
@@ -60,7 +64,7 @@ const handleClickLimpiarLista = () => {
                 <ol>
                   {notas.map((item, index) => { 
                   return(
-                    <li key={index}>
+                    <li key={index} onClick={()=>handleClickNota(index)} style={{cursor:"pointer"}}>
                       {item.titulo}({item.fecha})&nbsp;
                       <i 
                       className="bi bi-x-circle-fill"
